@@ -21,3 +21,5 @@ for face in faces:
 cv2.imshow("Face", img)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
+
+# Source: https://hardliver.blogspot.com/2017/07/dlib-dlib.html
