@@ -3,7 +3,6 @@ import math
 import dlib
 import time
 import numpy
-import imutils
 from mtcnn import MTCNN
 from imutils.face_utils import rect_to_bb
 from imutils.face_utils import FaceAligner
@@ -112,7 +111,6 @@ class Face_Align():
         else:
             image = self.image.copy()
 
-        # image = imutils.resize(image, width=1200)
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
         # show the original input image and detect faces in the grayscale
@@ -124,7 +122,6 @@ class Face_Align():
             # extract the ROI of the *original* face, then align the face
             # using facial landmarks
             (x, y, w, h) = rect_to_bb(rect)
-            # face_orig = imutils.resize(image[y:y + h, x:x + w], width=256)
             face_align = fa.align(image, gray, rect)
 
         print("Dlib_5 aligmented face cost %.2f secs." % (time.time() - start))
@@ -150,7 +147,6 @@ class Face_Align():
         else:
             image - self.image.copy()
 
-        # image = imutils.resize(image, width=1200)
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
         # show the original input image and detect faces in the grayscale
