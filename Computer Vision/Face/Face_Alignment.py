@@ -10,8 +10,10 @@ from imutils.face_utils import FaceAligner
 
 
 class Face_Align():
-    def __init__(self, image):
+    def __init__(self, image, face_size=256):
         self.image = image
+        self.face_size = face_size
+
 
     def eyes_distance(self, p1, p2):
         length = math.sqrt((p1[0]-p2[0])**2 + (p1[1]-p2[1])**2)/2
@@ -86,7 +88,8 @@ class Face_Align():
 
         # RGB to BGR.
         face_align = cv2.cvtColor(orig_rotated[y:y+h, x:x+w], cv2.COLOR_BGR2RGB)
-        print("Alignmented face Cost %.2f secs" % (time.time() - start))
+        face_align = cv2.resize(face_align, (self.face_size, self.face_size))
+        print("MTCNN alignmented face Cost %.2f secs" % (time.time() - start))
 
         # Show image.
         if show_image:
@@ -121,14 +124,14 @@ class Face_Align():
             # extract the ROI of the *original* face, then align the face
             # using facial landmarks
             (x, y, w, h) = rect_to_bb(rect)
-            face_orig = imutils.resize(image[y:y + h, x:x + w], width=256)
+            # face_orig = imutils.resize(image[y:y + h, x:x + w], width=256)
             face_align = fa.align(image, gray, rect)
 
-        print("Aligmented face cost %.2f secs." % (time.time() - start))
+        print("Dlib_5 aligmented face cost %.2f secs." % (time.time() - start))
         
         # Show image.
         if show_image:
-            cv2.imshow("MTCNN", face_align)
+            cv2.imshow("Dlib 5", face_align)
             cv2.waitKey(0)
             cv2.destroyAllWindows()
         return face_align
@@ -159,14 +162,13 @@ class Face_Align():
             # extract the ROI of the *original* face, then align the face
             # using facial landmarks
             (x, y, w, h) = rect_to_bb(rect)
-            face_orig = imutils.resize(image[y:y + h, x:x + w], width=256)
             face_align = fa.align(image, gray, rect)
 
-        print("Aligmented face cost %.2f secs." % (time.time() - start))
+        print("Dlib_68 aligmented face cost %.2f secs." % (time.time() - start))
         
         # Show image.
         if show_image:
-            cv2.imshow("MTCNN", face_align)
+            cv2.imshow("Dlib 68", face_align)
             cv2.waitKey(0)
             cv2.destroyAllWindows()
         return face_align
@@ -176,6 +178,6 @@ if __name__ == "__main__":
     import cv2
 
     face_aligner = Face_Align("testing-data/lady.jpg")
-    mtcnn_align = face_aligner.mtcnn_alignment(show_image=True)
+    mtcnn = face_aligner.mtcnn_alignment(show_image=True)
     dlib_5 = face_aligner.dlib_5point_alignment("models\shape_predictor_5_face_landmarks.dat", show_image=True)
     dlib_68 = face_aligner.dlib_68point_alignment("models\shape_predictor_68_face_landmarks.dat", show_image=True)
