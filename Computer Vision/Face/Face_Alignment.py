@@ -2,7 +2,6 @@ import cv2
 import math
 import dlib
 import time
-import numpy
 from mtcnn import MTCNN
 from imutils.face_utils import rect_to_bb
 from imutils.face_utils import FaceAligner
@@ -171,9 +170,7 @@ class Face_Align():
 
 
 if __name__ == "__main__":
-    import cv2
-
     face_aligner = Face_Align("testing-data/lady.jpg")
     mtcnn = face_aligner.mtcnn_alignment(show_image=True)
-    dlib_5 = face_aligner.dlib_5point_alignment("models\shape_predictor_5_face_landmarks.dat", show_image=True)
-    dlib_68 = face_aligner.dlib_68point_alignment("models\shape_predictor_68_face_landmarks.dat", show_image=True)
+    dlib_5 = face_aligner.dlib_5point_alignment("models\landmark\shape_predictor_5_face_landmarks.dat", show_image=True)
+    dlib_68 = face_aligner.dlib_68point_alignment("models\landmark\shape_predictor_68_face_landmarks.dat", show_image=True)
