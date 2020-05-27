@@ -37,7 +37,9 @@ class Face_Detect():
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
+        return self.face
     
+
     def dlib_detect(self, show_image=False):       
         detector = dlib.get_frontal_face_detector()
 
@@ -59,6 +61,8 @@ class Face_Detect():
         cv2.waitKey(0)
         cv2.destroyAllWindows()
         
+        return self.face
+
 
     def dnn_detect(self, 
                    face_config=str(),
@@ -102,6 +106,8 @@ class Face_Detect():
                     continue
         cv2.waitKey(0)
         cv2.destroyAllWindows()
+
+        return self.face
 
 
 if __name__ == "__main__":
