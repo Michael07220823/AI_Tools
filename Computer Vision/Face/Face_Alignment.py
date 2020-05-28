@@ -6,11 +6,59 @@ from mtcnn import MTCNN
 from imutils.face_utils import rect_to_bb
 from imutils.face_utils import FaceAligner
 
-
+'''
+This Face_Align() class is only used to single face alignment.
+'''
 class Face_Align():
     def __init__(self, image, face_size=256):
-        self.image = image
-        self.face_size = face_size
+        if type(image) == str:
+            # mtcnn only receive rgb or bgr format, image need to has three channels.
+            self.__image = cv2.imread(image)
+        else:
+            self.__image = image.copy()
+
+        self.__face_size = face_size
+        self.__face_align = None
+
+
+    def change_image(self, image):
+        if type(image) == str:
+            # mtcnn only receive rgb or bgr format, image need to has three channels.
+            self.__image = cv2.imread(image)
+        else:
+            self.__image = image.copy()
+    
+
+    def change_face_size(self, size):
+        if type(size) == int:
+            self.__face_size = size
+        else:
+            print("Input error ! size is interger.")
+
+
+    def get_image(self):
+        return self.__image
+
+
+    def get_face_size(self):
+        return self.__face_size
+
+
+    def get_face_align(self):
+        return self.__face_align
+
+
+    def show_image(self):
+        cv2.imshow("Image", cv2.resize(self.__image, (640, 480)))
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
+
+    def show_face(self):
+        assert type(self.__face_align) != None, "Please run face alignment before show_face() !"
+        cv2.imshow("Face", self.__face_align)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
 
 
     def eyes_distance(self, p1, p2):
@@ -46,13 +94,9 @@ class Face_Align():
     def mtcnn_alignment(self, show_image=False):
         start = time.time()
 
-        detector = MTCNN()
+        image = cv2.cvtColor(self.__image.copy(), cv2.COLOR_BGR2RGB)
 
-        if type(self.image) == str:
-            # mtcnn only receive rgb or bgr format, image need to has three channels.
-            image = cv2.cvtColor(cv2.imread(self.image), cv2.COLOR_BGR2RGB)
-        else:
-            image = self.image.copy()
+        detector = MTCNN()
         
         # Detect face and get face five point.
         result = detector.detect_faces(image)
@@ -86,7 +130,7 @@ class Face_Align():
 
         # RGB to BGR.
         face_align = cv2.cvtColor(orig_rotated[y:y+h, x:x+w], cv2.COLOR_BGR2RGB)
-        face_align = cv2.resize(face_align, (self.face_size, self.face_size))
+        face_align = cv2.resize(face_align, (self.__face_size, self.__face_size))
         print("MTCNN alignmented face Cost %.2f secs" % (time.time() - start))
 
         # Show image.
@@ -94,6 +138,8 @@ class Face_Align():
             cv2.imshow("MTCNN", face_align)
             cv2.waitKey(0)
             cv2.destroyAllWindows()
+        
+        self.__face_align = face_align
         return face_align
 
 
@@ -104,11 +150,7 @@ class Face_Align():
         predictor = dlib.shape_predictor(shape_5_landmark_file)
         fa = FaceAligner(predictor, desiredFaceWidth=256)
 
-        if type(self.image) == str:
-            # load the input image, resize it, and convert it to grayscale
-            image = cv2.imread(self.image)
-        else:
-            image = self.image.copy()
+        image = self.__image.copy()
 
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
@@ -130,6 +172,8 @@ class Face_Align():
             cv2.imshow("Dlib 5", face_align)
             cv2.waitKey(0)
             cv2.destroyAllWindows()
+
+        self.__face_align = face_align
         return face_align
 
 
@@ -140,11 +184,7 @@ class Face_Align():
         predictor = dlib.shape_predictor(shape_68_landmark_file)
         fa = FaceAligner(predictor, desiredFaceWidth=256)
 
-        if type(self.image) == str:
-            # load the input image, resize it, and convert it to grayscale
-            image = cv2.imread(self.image)
-        else:
-            image - self.image.copy()
+        image = self.__image.copy()
 
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
@@ -166,6 +206,8 @@ class Face_Align():
             cv2.imshow("Dlib 68", face_align)
             cv2.waitKey(0)
             cv2.destroyAllWindows()
+
+        self.__face_align = face_align
         return face_align
 
 
@@ -174,3 +216,4 @@ if __name__ == "__main__":
     mtcnn = face_aligner.mtcnn_alignment(show_image=True)
     dlib_5 = face_aligner.dlib_5point_alignment("models\landmark\shape_predictor_5_face_landmarks.dat", show_image=True)
     dlib_68 = face_aligner.dlib_68point_alignment("models\landmark\shape_predictor_68_face_landmarks.dat", show_image=True)
+    face_aligner.show_face()
