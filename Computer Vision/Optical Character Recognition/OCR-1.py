@@ -12,7 +12,7 @@ from PIL import Image
 import pytesseract as pytess
 import matplotlib.pyplot as plt
 
-img = Image.open("F:/Github/AI_Tools/Computer Vision/Optical Character Recognition/images/song sheet/隱形的翅膀.png")
+img = Image.open("F:/Github/AI_Tools/Computer Vision/Optical Character Recognition/images/song_sheet/隱形的翅膀.png")
 plt.figure("Song sheet")
 plt.imshow(img)
 plt.show()
